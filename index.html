@@ -37,11 +37,7 @@
   <script src="info_sheets.js"></script>
   
 
-  <!-- Load custom plugins from directory-->
-  <script src="staircase.js"></script>
-  <script src="dot-difference-functions.js"></script>
-
-
+ 
 
   <!-- Some custom CSS-->
   <link href="custom-css.css" rel="stylesheet" type="text/css" />
@@ -72,38 +68,27 @@
 
 // Settings (set these)
 
-  const DataPipe_ID = "vUyxuIvNMDjb" // The DataPipe ID for where the data should be stored
+  const DataPipe_ID = "NULL" // The DataPipe ID for where the data should be stored
 
   const sona_experiment_id = "NA"; // The SONA experiment ID 
   const sona_credit_token = "NA"; // The SONA credit token 
   const Prolific_redirect = "CHGWKNI0"; // The Prolific redirect link (to credit)
   const Prolific_failed_check = "C13PIUOF"; // The Prolific redirect link to NOT credit (manual review)
-  const task_time = 15;
-  
-
-
-
-var outcome = jsPsych.randomization.sampleWithoutReplacement(['Low', 'High'], 1)[0];
-jsPsych.data.addProperties({outcome_condition: outcome});
-
-
-// Global parameters (might need to change)
-  const ratings_on = false; // Turn on/off confidence ratings 
-
-  
-  var no_trials = 36; // number of trials in each block
-
-
-
-
+  const task_time = 6;
+  var no_trials = 30; // number of trials in each block
   var in_fullscreen = true;
   var trialnum = 1;
   var blocknum = 1;
   aborted = false;
 
+  var ratings_on = null;
+  var outcome_density = null;
+  var outcome = null;
 
 
-  jsPsych.data.addProperties({ratings_on: ratings_on});
+
+
+
 
 
 //////////////////////////////////
@@ -163,31 +148,29 @@ jsPsych.data.addProperties({outcome_condition: outcome});
   var instructions = {
     type: jsPsychInstructions,
     pages: function(){
-      if(ratings_on == true) return [
+      if(ratings_on == false) return [
         '<h1>Welcome to the task!</h1>' +
         '<p>In this experiment, you are asked to imagine that you are a medical researcher studying a new illness caused by a virus in the human body.</p>' + 
         '<p>An experimental drug, Cloveritol, has been developed in the hopes of treating the disease effectively. Laboratory results of Cloveritol have been promising but the drug&#39;s efficacy and side effects have not yet been tested on patients.</p>',
         '<p>Your job is to assess the new drug while you treat patients with the disease.</p>' + 
         '<p>You will see a series of patients one by one. For each one, you are first shown whether the patient was administered Cloveritol or no treatment.</p>' +
-        '<p>You will then be asked to rate the patient&#39;s chances of recovery using a sliding scale. The scale ranges from Very unlikely to Very likely.<p>' +
-        '<p>Once you are happy with your prediction, you may click Continue to proceed.</p>' +
+        '<p>You will be asked to predict the patient&#39;s chances of recovery.<p>' +
         '<p>You will then observe whether the patient recovered by the end of the observation period, or whether they were still sick.</p>',
         '<p>You will have the opportunity to treat a series of patients. At the end of these trials, you will be asked to judge how effective Cloveritol is for treating this particular illness.</p>' +
         '<p>Try to use only the knowledge you have learned from the experiment to make your decisions.</p>'
 
         ]
-       if(ratings_on == false) return [
-        '<p>Welcome to the task!</p>' +
+       if(ratings_on == true) return [
+       '<h1>Welcome to the task!</h1>' +
         '<p>In this experiment, you are asked to imagine that you are a medical researcher studying a new illness caused by a virus in the human body.</p>' + 
-        '<p>An experimental drug, Cloveritol, has been developed in the hopes of treating the disease effectively. Laboratory results of Cloveritol have been promising but the drug’s efficacy and side effects have not yet been tested on patients.</p>',
+        '<p>An experimental drug, Cloveritol, has been developed in the hopes of treating the disease effectively. Laboratory results of Cloveritol have been promising but the drug&#39;s efficacy and side effects have not yet been tested on patients.</p>',
         '<p>Your job is to assess the new drug while you treat patients with the disease.</p>' + 
         '<p>You will see a series of patients one by one. For each one, you are first shown whether the patient was administered Cloveritol or no treatment.</p>' +
-        '<p>You will then be asked to rate the patient&#39;s chances of recovery using a sliding scale. The scale ranges from Very unlikely to Very likely.<p>' +
-        '<p>Once you are happy with your prediction, you may click Continue to proceed.</p>' +
+        '<p>You will be asked to predict the patient&#39;s chances of recovery.<p>' +
+        '<p>You will then be asked to rate your confidence in your prediction on a scale ranging from "guessing" to "certain".<p>' +  
         '<p>You will then observe whether the patient recovered by the end of the observation period, or whether they were still sick.</p>',
         '<p>You will have the opportunity to treat a series of patients. At the end of these trials, you will be asked to judge how effective Cloveritol is for treating this particular illness.</p>' +
         '<p>Try to use only the knowledge you have learned from the experiment to make your decisions.</p>'
-
 
         ]
      },
@@ -306,57 +289,6 @@ var conf_instruc = {
 
 
 
-/////////////// **********  Outcome Density  ***************************** ///////////////
-
-
-
-
-if(outcome == 'Low'){
-
-// Patient Recovers on 20% of trials
-  outcome_density = [
-    {cue: 'Clovertiol', outcome: 'Patient has recovered', col: 'green'},
-    {cue: 'No Treatment', outcome: 'Patient has recovered', col: 'green'},
-    {cue: 'Clovertiol', outcome: 'Patient did not recover', col: 'red'},
-    {cue: 'No Treatment', outcome: 'Patient did not recover', col: 'red'},
-    {cue: 'Clovertiol', outcome: 'Patient did not recover', col: 'red'},
-    {cue: 'No Treatment', outcome: 'Patient did not recover', col: 'red'},
-    {cue: 'Clovertiol', outcome: 'Patient did not recover', col: 'red'},
-    {cue: 'No Treatment', outcome: 'Patient did not recover', col: 'red'},
-    {cue: 'Clovertiol', outcome: 'Patient did not recover', col: 'red'},
-    {cue: 'No Treatment', outcome: 'Patient did not recover', col: 'red'},
-    ]
-
-
-}
-
-
-
-
-if(outcome == "High"){
-
-// Patient Recovers on 80% of trials
-  outcome_density = [
-    {cue: 'Clovertiol', outcome: 'Patient has recovered', col: 'green'},
-    {cue: 'No Treatment', outcome: 'Patient has recovered', col: 'green'},
-        {cue: 'Clovertiol', outcome: 'Patient has recovered', col: 'green'},
-    {cue: 'No Treatment', outcome: 'Patient has recovered', col: 'green'},
-        {cue: 'Clovertiol', outcome: 'Patient has recovered', col: 'green'},
-    {cue: 'No Treatment', outcome: 'Patient has recovered', col: 'green'},
-        {cue: 'Clovertiol', outcome: 'Patient has recovered', col: 'green'},
-    {cue: 'No Treatment', outcome: 'Patient has recovered', col: 'green'},
-    {cue: 'Clovertiol', outcome: 'Patient did not recover', col: 'red'},
-    {cue: 'No Treatment', outcome: 'Patient did not recover', col: 'red'},
-
-
-
-    ]
-
-
-
-
-}
-
 
 
 /////////////// **********  Contingency TRIAL  ***************************** ///////////////
@@ -377,19 +309,19 @@ var train_trial = {
 // Present Stimulus
 
   {
-    type: jsPsychHtmlSliderResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: function(){
 
-      if(jsPsych.timelineVariable('cue') == "Clovertiol"){
-        return `<img src = "cloveritol.png" style="width:120px;height:200px;margin-top:-200px;"></img><h1 style = "color: #275AC5;">`+jsPsych.timelineVariable('cue')+`</h1><p>Rate the chances this patient will recover.</p><output style = "font-size: 20pt; color: #279AC5;"></output>`} else {
-          return `<h1 style = "color: #275AC5;">`+jsPsych.timelineVariable('cue')+`</h1><p>Rate the chances this patient will recover.</p><output style = "font-size: 20pt; color: #279AC5;"></output>`
+      if(jsPsych.timelineVariable('cue') == "Cloveritol"){
+        return `<img src = "cloveritol.png" style="width:120px;height:200px;margin-top:-200px;"></img><h1 style = "color: #275AC5;">`+jsPsych.timelineVariable('cue')+`</h1><p>Will the patient recover?</p><output style = "font-size: 20pt; color: #279AC5;"></output>`} else {
+          return `<h1 style = "color: #275AC5;">`+jsPsych.timelineVariable('cue')+`</h1><p>Will the patient recover?</p><output style = "font-size: 20pt; color: #279AC5;"></output>`
 
         }
       },
 
 
       require_movement: true,
-      labels: ['Very unlikely', 'Very likely'],
+      choices: ['Very unlikely', 'Very likely'],
       css_classes: 'train_css',
       slider_start: 0,
       on_load: function(){
@@ -462,7 +394,7 @@ var train_trial = {
       {
         type: jsPsychHtmlButtonResponse,
         stimulus: function(){
-          if(jsPsych.timelineVariable('cue') == "Clovertiol"){ return `<img src = "cloveritol.png" style="width:120px;height:200px;margin-top:-200px;"></img><h1 style = "color: #275AC5;">`+jsPsych.timelineVariable('cue')+`</h1><br><br><br><p>Outcome:</p>` +
+          if(jsPsych.timelineVariable('cue') == "Cloveritol"){ return `<img src = "cloveritol.png" style="width:120px;height:200px;margin-top:-200px;"></img><h1 style = "color: #275AC5;">`+jsPsych.timelineVariable('cue')+`</h1><br><br><br><p>Outcome:</p>` +
           '<h2 style = "color: ' + jsPsych.timelineVariable('col') + ';">' + jsPsych.timelineVariable('outcome') + '</h2><output style = "font-size: 20pt; color: #6BB76E;">'} else{
 
             return `<h1 style = "color: #275AC5;">`+jsPsych.timelineVariable('cue')+`</h1><br><br><br><p>Outcome:</p>` +
@@ -518,7 +450,7 @@ var train_trial = {
           data.confidence = "";
         }
         data.cue = jsPsych.timelineVariable('cue');
-        data.outcome = jsPsych.timelineVariable('cue');
+        data.outcome = jsPsych.timelineVariable('outcome');
         data.trial_type = "Summary Trial"
         trialnum++;
 
@@ -528,8 +460,45 @@ var train_trial = {
 
 
     ],
-timeline_variables: outcome_density,
-randomize_order: true
+timeline_variables: [
+  // Low Outcome
+    {cue: 'Cloveritol', outcome: 'Patient has recovered', col: 'green'},
+    {cue: 'No Treatment', outcome: 'Patient has recovered', col: 'green'},
+    {cue: 'Cloveritol', outcome: 'Patient did not recover', col: 'red'},
+    {cue: 'No Treatment', outcome: 'Patient did not recover', col: 'red'},
+    {cue: 'Cloveritol', outcome: 'Patient did not recover', col: 'red'},
+    {cue: 'No Treatment', outcome: 'Patient did not recover', col: 'red'},
+    {cue: 'Cloveritol', outcome: 'Patient did not recover', col: 'red'},
+    {cue: 'No Treatment', outcome: 'Patient did not recover', col: 'red'},
+    {cue: 'Cloveritol', outcome: 'Patient did not recover', col: 'red'},
+    {cue: 'No Treatment', outcome: 'Patient did not recover', col: 'red'},
+  // High Outcome
+    {cue: 'Cloveritol', outcome: 'Patient has recovered', col: 'green'},
+    {cue: 'No Treatment', outcome: 'Patient has recovered', col: 'green'},
+    {cue: 'Cloveritol', outcome: 'Patient has recovered', col: 'green'},
+    {cue: 'No Treatment', outcome: 'Patient has recovered', col: 'green'},
+    {cue: 'Cloveritol', outcome: 'Patient has recovered', col: 'green'},
+    {cue: 'No Treatment', outcome: 'Patient has recovered', col: 'green'},
+    {cue: 'Cloveritol', outcome: 'Patient has recovered', col: 'green'},
+    {cue: 'No Treatment', outcome: 'Patient has recovered', col: 'green'},
+    {cue: 'Cloveritol', outcome: 'Patient did not recover', col: 'red'},
+    {cue: 'No Treatment', outcome: 'Patient did not recover', col: 'red'},
+
+
+
+    ],
+sample: {
+        type: 'custom',
+        fn: function(t){
+          console.log(outcome)
+           if(outcome == "Low") var myArray = [0,1,2,3,4,5,6,7,8,9]; 
+           if(outcome == "High") var myArray = [10,11,12,13,14,15,16,17,18,19];
+
+           
+           var shuffledArray = jsPsych.randomization.repeat(myArray, 1);
+           return shuffledArray;
+        }
+    }
 };
 
 
@@ -537,6 +506,10 @@ randomize_order: true
 
 var efficacy_rating = {
   type: jsPsychHtmlSliderResponse,
+    on_finish: function(data){
+          data.trial_type = "Efficacy Rating";
+
+        },
   stimulus: "<img src = 'cloveritolvnotreat.png' style='width:300px;height:200px;'></img><h1 style = 'color: #275AC5;'>Cloveritol vs No treatment</h1><p>On a scale from -100% to 100%, rate how effective you think the treatment was compared to having no treatment at all</p><p style = 'color: grey;'>NOTE: intermediate negative values indicate the drug actually made the disease worse, whereas intermediate positive values indicate the drug was effective in treating the disease</p>",
   labels: ['-100 (effectively worsens recovery)', '0 (completely ineffective)','+100 (effectively improves recovery)']
 }
@@ -559,7 +532,7 @@ var debug = {
 const train_block = {
   data: {phase: "Train"},
   timeline: [train_trial],
-  repetitions: no_trials/2,
+  repetitions: no_trials/10,
   on_timeline_start: function(){
     provide_feedback = true; 
   }
@@ -627,14 +600,29 @@ if(typeof SONAID != 'undefined'){
 
 
 // Create Experiment
-
-  condition_1_timeline = [ participant_info_paid, participant_info_SONA, instructions, train_block, efficacy_rating,debug, save_data, DEBRIEF_SONA ];
+//
+  timeline = [  participant_info_paid, participant_info_SONA, instructions, train_block, efficacy_rating,debug, save_data, DEBRIEF_SONA ];
 
   async function createExperiment(){
+
+    /////////////// **********  Condition Assignment  ***************************** ///////////////
     const condition = await jsPsychPipe.getCondition(DataPipe_ID);
     jsPsych.data.addProperties({condition: condition});
-    if(condition == 0) { timeline = condition_1_timeline; }
-    if(condition == 1) { timeline = condition_1_timeline; }
+    if(condition == 0) { ratings_on = false; outcome = "Low";}
+    if(condition == 1) { ratings_on= true; outcome = "Low";}
+    if(condition == 2) { ratings_on = false; outcome = "High";}
+    if(condition == 3) { ratings_on= true; outcome = "High";}
+
+    jsPsych.data.addProperties({ratings_on: ratings_on});
+    jsPsych.data.addProperties({outcome: outcome});
+
+
+
+
+
+
+
+
     jsPsych.run(timeline);
   }
 
