@@ -5,7 +5,7 @@ Currently, the task is programmed to randomly allocate particpants to an outcome
 
 # Contingency Learning Task (Cloveritol)
 
-A web-based contingency learning task (e.g., <a href="https://doi.org/10.1186/s41235-020-00237-2">Double et al., 2020</a>) using a medical cover story. The task supports outcome-density and cue-density manipulations, optional confidence ratings, and a final efficacy judgment (−100 to +100).
+A web-based contingency learning task using a medical cover story. The task supports outcome-density and cue-density manipulations, optional confidence ratings, and a final efficacy judgment (−100 to +100).
 
 ---
 
